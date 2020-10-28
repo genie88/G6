@@ -180,16 +180,30 @@ export default class Node extends Item implements INode {
       const points = shapeFactory.getAnchorPoints(type, shapeCfg) || [];
 
       each(points, (pointArr, index) => {
-        const point = mix(
-          {
-            x: bbox.minX + pointArr[0] * bbox.width,
-            y: bbox.minY + pointArr[1] * bbox.height,
-          },
-          pointArr[2],
-          {
-            index,
-          },
-        );
+        let point
+        if (!isNaN(pointArr.x) && !isNaN(pointArr.y)) {
+          point = mix(
+            {
+              x: bbox.minX + pointArr.x,
+              y: bbox.minY + pointArr.y
+            },
+            pointArr.cfg,
+            {
+              index: index
+            },
+          )
+        } else {
+          point = mix(
+            {
+              x: bbox.minX + pointArr[0] * bbox.width,
+              y: bbox.minY + pointArr[1] * bbox.height,
+            },
+            pointArr[2],
+            {
+              index,
+            },
+          );
+        }
         anchorPoints.push(point);
       });
       this.set(CACHE_ANCHOR_POINTS, anchorPoints);
